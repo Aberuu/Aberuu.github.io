@@ -1,0 +1,224 @@
+body{
+    padding: 0;
+    margin: 0;
+    font-family: sans-serif;
+    background-color: #0B0C0E;
+    opacity: 0.6;
+}
+
+#bar{
+    width: 100%;
+    height: 400px;
+    background-image: url(ass/topo.jpg);
+    background-size: cover;
+    background-color: #0B0C0E;
+    border-bottom: black solid 5px;
+    position: absolute;
+}
+
+
+#boxjudul{
+    position: absolute;
+    background-image: url(ass/20220716_194630-removebg-preview.png);
+    background-size: cover;
+    width: 300px;
+    height: 300px;
+    margin-top: 45px;
+    margin-left: 40px;
+}
+
+@font-face {
+    font-family: 'Monsterrat';
+    src: url(ass/font/Monsterrat/Montserrat-SemiBold.otf);
+}
+
+@font-face {
+    font-family: 'ThinMonsterrat';
+    src: url(ass/font/Monsterrat/Montserrat-Regular.otf);
+}
+
+
+.barjudul{
+    font-size: 5rem;
+    font-family: 'ThinMonsterrat';
+    padding-top: 140px;
+    padding-left: 210px;
+    margin-left: 40px;
+    color: white;
+    letter-spacing: 5px;
+}
+
+.kelas{
+    position: absolute;
+    right: 35px;
+    bottom: 1px;
+    color: white;
+    font-family: monospace;
+}
+
+.list{
+    background-color: #141414 ;
+    background-size: cover;
+    position: absolute;
+    top: 400px;
+    padding-top: 50px;
+    
+}
+
+
+.isijudul{
+    position: absolute;
+    top: 44.5px;
+    margin-left: 40px;
+    color: white;
+    font-family: monospace;
+    text-decoration: none;
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:2em;
+    Letter-spacing:2px;
+}
+
+#menutext{
+    border-right: yellow solid 5px;
+    padding-right: 10px;
+    color: white;
+}
+
+.menuanggota{
+    border-right: yellow solid 5px;
+    padding-right: 10px;
+    color: white;
+}
+
+#menucreator{
+    color:white;
+}
+
+a{
+    text-decoration: none;
+    color: black;
+    font-family: monospace;
+}
+
+.listmenu{
+    position: absolute;
+    top: 8px;
+    right: 20px;
+    color:1#fff;
+    font-weight:700;
+    text-decoration:none;
+    font-size:2em;
+    text-transform:uppercase;
+    Letter-spacing:2px;
+}
+
+ul{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+ul li{
+    list-style:none;
+    margin-left: 20px;
+}
+
+ul li a{
+    text-decoration: none;
+    padding: 6px 15px;
+    color:#fff;
+    border-radius: 20px;
+}
+
+ul li a:hover
+{
+    background-color: #fff;
+    color: #2b1055;
+}
+
+#text{
+    padding-top: 100px;
+    margin-left: 30px;
+    margin-right: 30px;
+    font-weight: bold;
+}
+
+.JText {
+    font-family: 'ThinMonsterrat';
+}
+
+.text1{
+    color: white;
+    font-size: 1.5rem;
+    margin-top: -35px;
+    padding-bottom: 35px;
+}
+
+.texticon1{
+    float: left;
+    width: 400px;
+    border-radius: 50px;
+    border: yellow solid 8px;
+    padding: 5px;
+    margin-right: 35px;
+}
+
+.text11{
+    margin-top: -35px;
+}
+
+.texticon1:hover {
+    width: 450px;
+    transition: 1s;
+}
+
+.text2{
+    padding-top: 100px;
+    padding-bottom: 150px;
+    font-size: 1.7rem;
+    color: white;
+}
+
+.text3{
+    padding-bottom: 150px;
+    color: white;
+    font-size: 1.5rem;
+    margin-right: 0px;
+}
+
+.texticon3{
+    float :right;
+    width: 400px;
+    border-radius: 50px;
+    border: yellow solid 8px;
+    padding: 5px;
+    margin-left: 35px;
+}
+
+.text33{
+    margin-right: 35px;
+}
+
+.texticon3:hover {
+    width: 500px;
+    transition: 1s;
+}
+
+.text4{
+    padding-bottom: 150px;
+    font-size: 1.7rem;
+    color: white;
+}
+
+#text5{
+    padding-bottom: 150px;
+    font-size: 1.7rem;
+    color: white;
+}
+
+#anggota{
+    margin-top: 100px;
+    border-top: black solid 3px;
+    color: white;
+}
