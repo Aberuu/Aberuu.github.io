@@ -1,0 +1,376 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #111111;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+}
+
+.bg {
+    position: absolute;
+    mix-blend-mode: lighten;
+    width: auto;
+}
+
+.bg2 {
+    position: absolute;
+    mix-blend-mode: lighten;
+    top: -200;
+}
+
+@font-face {
+    font-family: 'Bebas';
+    src: url(asset/BebasNeue-Regular.ttf);
+  }
+
+  @font-face {
+    font-family: 'Mont';
+    src: url(asset/Mont/Montserrat-Medium.otf);
+  }
+
+.logo {
+    position: absolute;
+    padding-left: 830px;
+    padding-top: 351px;
+}
+
+.logo2 {
+    position: absolute;
+    font-family: 'Bebas';
+    color: white;
+    letter-spacing: 5px;
+    padding-left: 85px;
+    margin-top: -66px;
+    font-size: 40px;
+}
+
+.parallax {
+    /* The image used */
+    background-image: url("asset/bg2.png");
+  
+    /* Set a specific height */
+    min-height: 500px; 
+  
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.porto {
+    position: absolute;
+    width: 1174px;
+    height: 191px;
+    left: 598px;
+    top: 160px;
+    font-family: 'Bebas';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 150px;
+    line-height: 180px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.05em;
+    color: #FFFFFF;
+}
+
+.one {
+    position: absolute;
+    width: 52px;
+    height: 72px;
+    left: 600px;
+    top: 140px;
+    font-family: 'Bebas';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 60px;
+    line-height: 72px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.05em;
+    color: #111111;
+    -webkit-text-stroke-color: #E85D04 ;
+    -webkit-text-stroke-width: 2px;
+}
+
+.two {
+    position: absolute;
+    width: 52px;
+    height: 72px;
+    left: 205px;
+    top: -100px;
+    font-family: 'Bebas';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 60px;
+    line-height: 72px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.05em;
+    color: #111111;
+    -webkit-text-stroke-color: #E85D04 ;
+    -webkit-text-stroke-width: 2px;
+}
+
+.definition {
+    position: absolute;
+    width: 189px;
+    height: 28px;
+    left: 600px;
+    top: 433px;
+    width: 300px;
+    font-family: 'Mont';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 23px;
+    line-height: 28px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.defined {
+    position: absolute;
+    width: 657px;
+    height: 72px;
+    left: 600px;
+    top: 480px;
+    font-family: 'Mont';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 18px;
+    display: flex;
+    align-items: center;
+    letter-spacing: -0.035em;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.line1 {
+    position: absolute;
+    width: 193.06px;
+    height: 0px;
+    left: 600px;
+    top: 575px;
+    border: 1px solid #E85D04;
+}
+
+.line2 {
+    position: absolute;
+    width: 0px;
+    height: 345px;
+    left: 600px;
+    top: 575px;
+    border: 1px solid #E85D04;
+}
+
+.line3 {
+    position: absolute;
+    width: 320px;
+    height: 0px;
+    left: 280px;
+    top: 920px;
+    border: 1px solid #E85D04;
+}
+
+.line4 {
+    position: absolute;
+    width: 80px;
+    height: 0px;
+    left: 100px;
+    top: 920px;
+    border: 1px solid #E85D04;
+}
+
+.line5 {
+    position: absolute;
+    width: 0px;
+    height: 470px;
+    left: 100px;
+    top: 920px;
+    border: 1px solid #E85D04;
+}
+
+.line6 {
+    position: absolute;
+    width: 640px;
+    height: 0px;
+    left: 100px;
+    top: 1390px;
+    border: 1px solid #E85D04;
+}
+
+.ellipse {
+    box-sizing: border-box;
+    border-radius: 50%;
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    left: 1330px;
+    top: 188px;
+    background: #111111;
+    border: 2px solid #E85D04;
+}
+
+.open {
+    position: absolute;
+    background-color: #111111;
+    top: 950px;
+    padding-right: 1000px;
+    padding-bottom: 400px;
+    margin: 0px;
+    margin-right: 0px;
+    color: white;
+}
+
+.who {
+    position: absolute;
+    padding-left: 200px;
+    padding-top: 0px;
+    margin-left: 0px;
+    margin-top: -200;
+    font-family: 'bebas';
+    letter-spacing: 15px;
+    font-size: 50px;
+    text-align: end;
+    max-width: 120px;
+
+}
+
+.isi {
+    font-family: 'Mont';
+    font-size: 1.2pc;
+    position: absolute;
+    padding-top: 17px;
+    padding-left: 350px;
+    max-width: 350px;
+    text-align: start;
+    width: 100%;
+    line-height: 1.48;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.profile {
+    position: absolute;
+    padding-left: 20px;
+    padding-top: -30px;
+}
+
+.three {
+    position: absolute;
+    width: 52px;
+    height: 72px;
+    left: 770px;
+    top: 1320px;
+    font-family: 'Bebas';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 60px;
+    line-height: 72px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.05em;
+    color: #111111;
+    -webkit-text-stroke-color: #E85D04 ;
+    -webkit-text-stroke-width: 2px;
+}
+
+.isiskill {
+    color: white;
+    position: absolute;
+    top: 1400px;
+    padding-left: 730px;
+    padding-top: 0px;
+    margin-left: 0px;
+    margin-top: -200;
+    font-family: 'bebas';
+    letter-spacing: 5px;
+    font-size: 50px;
+    text-align: end;
+    max-width: 120px;
+}
+
+.lang {
+    position: absolute;
+    width: 657px;
+    height: 72px;
+    left: 670px;
+    top: 1460px;
+    font-family: 'Mont';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 18px;
+    display: flex;
+    align-items: center;
+    letter-spacing: -0.035em;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.python {
+    position: absolute;
+    left: 750px;
+    top: 1600px;
+    padding: 10px;
+    border: 2px solid white;
+    border-radius: 10px;
+    height: 60px;
+    width: auto;
+   
+}
+
+.javasc {
+    position: absolute;
+    left: 880px;
+    top: 1600px;
+    padding: 10px;
+    border: 2px solid white;
+    border-radius: 10px;
+    height: 60px;
+    width: auto;
+   
+}
+
+.typesc {
+    position: absolute;
+    left: 620px;
+    top: 1600px;
+    padding: 10px;
+    border: 2px solid white;
+    border-radius: 10px;
+    height: 60px;
+    width: auto;
+}
+
+.foot {
+    position: absolute;
+    background-color: #111111;
+    top: 2500px;
+    left: 680px;
+    margin: 0px;
+    margin-right: 0px;
+    color: white;
+    font-family: 'bebas';
+    letter-spacing: 2px;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent; 
+}
+   
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 100px; 
+}
+  
+  /* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
