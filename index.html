@@ -1,32 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
-</head>
-<body>
-  <h2>PEMILOS PENGURUS OSIS SMA KRISTEN 1 SALATIGA</h2>
-  <p id="codecss">Masukkan Kode 6 Digit Anda:</p>
-  <input type="text" id="kode" maxlength="6" placeholder="123456" />
-  <br>
-  <button onclick="submitVote('1')">Opsi 1</button>
-  <button onclick="submitVote('2')">Opsi 2</button>
-  <button onclick="submitVote('3')">Opsi 3</button>
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Document</title>
+      <link rel="stylesheet" href="style2.css">
+      <script src="script.js"></script>
+  </head>
+  <body>
+    <h2>PEMILOS PENGURUS OSIS SMA KRISTEN 1 SALATIGA</h2>
+    <p id="codecss">Masukkan Kode 6 Digit Anda:</p>
+    <input type="text" id="kode" maxlength="6" placeholder="123456" />
+    <br>
+    <div class="container">
+      <div class="card">
+         <button class="tombol" onclick="submitVote('1')">Opsi 1</button>
+      </div>
+    <div class="container">
+      <div class="card">
+        <button class="tombol" onclick="submitVote('2')">Opsi 2</button>
+      </div>
+      <div class="container">
+      <div class="card">
+        <button class="tombol" onclick="submitVote('3')">Opsi 3</button>
+      </div>
 
-   <div id="status"></div>
-`
-  <!-- POPUP MODAL -->
-  <div id="popup">
-    <div id="popupContent">
-      <div class="spinner"></div>
-      <div id="loadingText">Voting berhasil! Halaman akan di-refresh...</div>
-      <div id="countdown">5</div>
-      <button onclick="refreshNow()">OK</button>
+    <div id="status"></div>
+  
+    <!-- POPUP MODAL -->
+    <div id="popup">
+      <div id="popupContent">
+        <div class="spinner"></div>
+        <div id="loadingText">Voting berhasil! Halaman akan di-refresh...</div>
+        <div id="countdown">5</div>
+        <button onclick="refreshNow()">OK</button>
+      </div>
     </div>
-  </div>
 
-</body>
-</html>
+  </body>
+  </html>
