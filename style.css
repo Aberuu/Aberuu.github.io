@@ -44,6 +44,7 @@ input[type="text"] {
   gap: 20px;
   margin-bottom: 40px;
   flex-wrap: wrap; /* agar responsif */
+  margin-left: 20px;
 }
 
 /* Kartu */
@@ -73,19 +74,19 @@ input[type="text"] {
 
 /* Tombol di bagian bawah kartu */
 .card button {
-  margin-top: 220px;
+  margin-top: 10px;
   padding: 10px 0;
   font-size: 1rem;
   border: none;
   border-radius: 6px;
-  background-color: #4a90e2;
+  background-color: #1c1c1d;
   color: white;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 .card button:hover {
-  background-color: #357ABD;
+  background-color: #606060;
 }
 
 /* Status di bawah kartu */
@@ -93,6 +94,12 @@ input[type="text"] {
   margin-top: 20px;
   font-weight: 600;
   color: #4a90e2;
+}
+
+.foto {
+  border-radius: 10px;
+  position: relative;
+  height: 100%;
 }
 
 /* Popup modal styling (optional, sesuai html) */
