@@ -192,27 +192,136 @@ ul{
 /* FEATURED */
 /* ============================= */
 
-.feature-grid{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:22px;
+.carousel-container {
+  position: relative;
+  overflow: hidden;
 }
 
-.feature-card{
-  padding:32px;
-  border-radius:28px;
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.06);
+.carousel-container img{
+  border-radius: 15px;
 }
 
-.feature-card h3{
-  font-size:1.6rem;
-  margin-bottom:14px;
+.carousel-container::before,
+.carousel-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 80px;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
 }
 
-.feature-card p{
-  color:#bdbdbd;
-  line-height:1.8;
+.carousel-container::before {
+  left: 0;
+  background: linear-gradient(
+    to right,
+    #0d0d0d,
+    transparent
+  );
+}
+
+.carousel-container::after {
+  right: 0;
+  background: linear-gradient(
+    to left,
+    #0d0d0d,
+    transparent
+  );
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 70px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s linear;
+  z-index: 10;
+  font-size: 1.2rem;
+}
+
+.carousel-btn:hover {
+  background: rgba(255, 132, 0, 0.8);
+  border-color: rgba(255, 132, 0, 0.8);
+  transform: scale(1.1);
+}
+
+.carousel-btn-prev {
+  left: 20px;
+}
+
+.carousel-btn-next {
+  right: 10px;
+}
+
+@media (max-width: 768px) {
+  .carousel-btn {
+    display: none;
+  }
+}
+.carousel-track {
+  display: flex;
+  gap: 10px;
+  transition: transform 0.3s linear;
+  cursor: grab;
+}
+
+.carousel-item {
+  flex: 0 0 300px;
+  padding: 32px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: transform 2s linear, opacity 0.8s linear, filter 1s linear;
+  transform: scale(0.8);
+  opacity: 0.6;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.carousel-item h3 {
+  text-align: center
+}
+
+.carousel-item p {
+  text-align: center
+}
+
+.carousel-item.active {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.carousel-item h3 {
+  font-size: 1.6rem;
+  margin-bottom: 14px;
+}
+
+.carousel-item p {
+  color: #bdbdbd;
+  line-height: 1.8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .carousel-item {
+    flex: 0 0 250px;
+    padding: 24px;
+  }
+  
+  .carousel-track {
+    gap: 15px;
+  }
 }
 
 .hero-buttons{
