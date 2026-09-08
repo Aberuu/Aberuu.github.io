@@ -47,7 +47,7 @@ export default function Hero() {
             </div>
 
             <div className="hero-button">
-              <LiquidButton href="#work" size="xl" className="rounded-full">
+              <LiquidButton href="#work" size="xl" className="rounded-xl">
                 Let&apos;s Go
               </LiquidButton>
             </div>
