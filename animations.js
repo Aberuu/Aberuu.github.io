@@ -52,6 +52,7 @@ function animateHero() {
   const ease = 'power3.out';
   const expo = 'expo.out';
 
+<<<<<<< HEAD
   // ── Poster wall entrance: cells slide in as one continuous sheet ──
   gsap.fromTo('.hero-posterwall__cell',
     { opacity: 0, x: 60 },
@@ -140,6 +141,62 @@ function animateHero() {
         scrub: 0.8,
       },
     });
+=======
+  const tl = gsap.timeline({ delay: 0.2 });
+
+  // 1) Outer double-border card zoom & fade in
+  tl.fromTo('.hero-card-outer',
+    { opacity: 0, scale: 0.94, y: 20 },
+    { opacity: 1, scale: 1, y: 0, duration: 1.1, ease: expo },
+  );
+
+  // 2) Hero title reveals smoothly
+  tl.fromTo('.hero-title',
+    { opacity: 0, y: 35 },
+    { opacity: 1, y: 0, duration: 0.9, ease },
+    '-=0.7',
+  );
+
+  // 3) Subtitle fades up
+  tl.fromTo('.hero-desc',
+    { opacity: 0, y: 20 },
+    { opacity: 0.7, y: 0, duration: 0.8, ease },
+    '-=0.6',
+  );
+
+  // 4) Status badge pops in
+  tl.fromTo('.hero-badge',
+    { opacity: 0, scale: 0.85, y: 15 },
+    { opacity: 1, scale: 1, y: 0, duration: 0.6, ease: 'back.out(1.8)' },
+    '-=0.5',
+  );
+
+  // 5) Liquid button pops in
+  tl.fromTo('.hero-button',
+    { opacity: 0, y: 20, scale: 0.92 },
+    { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: 'back.out(1.5)' },
+    '-=0.4',
+  );
+
+  // Scroll scrub parallax effect
+  const hero = document.querySelector('.hero-editorial');
+  if (hero) {
+    const card = hero.querySelector('.hero-card-outer');
+    if (card) {
+      gsap.to(card, {
+        scale: 0.92,
+        y: -50,
+        opacity: 0.3,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: hero,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 0.8,
+        },
+      });
+    }
+>>>>>>> 7b6512d (Release 7 (Hero Revamp))
   }
 }
 
@@ -257,7 +314,11 @@ function animateHeader() {
   const header = document.querySelector('.site-header');
   if (!header) return;
 
+<<<<<<< HEAD
   const hero = document.querySelector('.hero-posterwall');
+=======
+  const hero = document.querySelector('.hero-editorial');
+>>>>>>> 7b6512d (Release 7 (Hero Revamp))
 
   ScrollTrigger.create({
     start: 0,
