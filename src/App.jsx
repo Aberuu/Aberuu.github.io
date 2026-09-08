@@ -40,7 +40,9 @@ function App() {
     <Analytics />
     <div ref={rootRef}>
       <div className="loader" aria-hidden="true">
-        <p className="loader-word">Agaphe</p>
+        <div className="loader-word-wrap">
+          <p className="loader-word">Agaphe</p>
+        </div>
         <div className="loader-track">
           <div className="loader-fill" />
         </div>

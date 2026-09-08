@@ -17,9 +17,10 @@ export default function Hero() {
       <div className="hero-card-outer relative z-10 w-full mx-auto max-w-3xl">
         <main className="hero-card-inner">
           <header className="hero-card-top">
-            <span className="hero-pill">
-              <i className="hero-pill-dot" aria-hidden="true" />
+            <span className="hero-index">
+              <i className="hero-index-caret" aria-hidden="true">▸</i>
               Portfolio
+              <i className="hero-index-cursor" aria-hidden="true" />
             </span>
             <span className="hero-card-note">EST. 2025 — Multidisciplinary Creative</span>
           </header>

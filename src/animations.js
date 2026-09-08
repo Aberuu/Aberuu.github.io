@@ -2,7 +2,7 @@ import { gsap, ScrollTrigger } from './lib/gsap';
 
 export function animateLoader(onComplete) {
   const loader = document.querySelector('.loader');
-  const word = document.querySelector('.loader-word');
+  const word = document.querySelector('.loader-word-wrap');
   const fill = document.querySelector('.loader-fill');
 
   if (!loader) {

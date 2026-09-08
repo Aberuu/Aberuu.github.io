@@ -43,7 +43,11 @@ export function setupSmoothScroll() {
     const target = document.querySelector(href);
     if (!target) return;
     e.preventDefault();
-    lenis.scrollTo(target, { offset: -72, duration: 1.2 });
+    lenis.scrollTo(target, {
+      offset: -72,
+      duration: 2.2,
+      easing: (t) => 1 - Math.pow(1 - t, 4),
+    });
   };
 
   const anchors = document.querySelectorAll('a[href^="#"]');
