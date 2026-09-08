@@ -22,13 +22,13 @@ export default function Hero() {
               Portfolio
               <i className="hero-index-cursor" aria-hidden="true" />
             </span>
-            <span className="hero-card-note">EST. 2025 — Multidisciplinary Creative</span>
+            <span className="hero-card-note">EST. 2021 — Multidisciplinary Creative</span>
           </header>
 
           <div className="hero-copy">
             <p className="hero-eyebrow">
               <span aria-hidden="true">──</span>
-              Design is Everything
+              Creative Director
               <span aria-hidden="true">──</span>
             </p>
             <h1 className="hero-title">Portfolio</h1>
@@ -40,9 +40,6 @@ export default function Hero() {
 
           <div className="hero-meta">
             <div className="hero-badge">
-              <span className="hero-badge-dot" aria-hidden="true">
-                <span className="hero-badge-ping" />
-              </span>
               <p>Available for New Projects</p>
             </div>
 

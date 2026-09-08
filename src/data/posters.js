@@ -1,11 +1,11 @@
-import img1 from '../assets/images/td1.jpeg';
-import img2 from '../assets/images/td2.JPG';
-import img3 from '../assets/images/td3.jpeg';
-import img4 from '../assets/images/td4.jpeg';
-import img5 from '../assets/images/td5.jpeg';
-import img6 from '../assets/images/td6.jpeg';
-import img7 from '../assets/images/td7.jpeg';
-import img8 from '../assets/images/td8.jpeg';
+import img1 from '../assets/images/td1.webp';
+import img2 from '../assets/images/td2.webp';
+import img3 from '../assets/images/td3.webp';
+import img4 from '../assets/images/td4.webp';
+import img5 from '../assets/images/td5.webp';
+import img6 from '../assets/images/td6.webp';
+import img7 from '../assets/images/td7.webp';
+import img8 from '../assets/images/td8.webp';
 
 export const POSTERS = [
   {
