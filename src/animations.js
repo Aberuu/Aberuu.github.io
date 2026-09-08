@@ -54,38 +54,59 @@ function animateHero() {
 
   const tl = gsap.timeline({ delay: 0.1 });
 
-  // 1) Outer card zoom & fade in
+  // 1) Card zooms & fades in from below
   tl.fromTo('.hero-card-outer',
-    { opacity: 0, scale: 0.94, y: 20 },
-    { opacity: 1, scale: 1, y: 0, duration: 1.0, ease: expo },
+    { opacity: 0, scale: 0.95, y: 60 },
+    { opacity: 1, scale: 1, y: 0, duration: 1.1, ease: expo },
   );
 
-  // 2) Hero title reveals smoothly
+  // 2) Top bar drops down
+  tl.fromTo('.hero-card-top',
+    { opacity: 0, y: -14 },
+    { opacity: 1, y: 0, duration: 0.7, ease },
+    '-=0.75',
+  );
+
+  // 3) Eyebrow slides in from the left
+  tl.fromTo('.hero-eyebrow',
+    { opacity: 0, x: -18 },
+    { opacity: 1, x: 0, duration: 0.6, ease },
+    '-=0.5',
+  );
+
+  // 4) Big display title wipes up with clip reveal
   tl.fromTo('.hero-title',
-    { opacity: 0, y: 30 },
-    { opacity: 1, y: 0, duration: 0.85, ease },
-    '-=0.65',
+    { opacity: 0, y: 60, clipPath: 'inset(0 0 100% 0)' },
+    { opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)', duration: 0.95, ease: 'power4.out' },
+    '-=0.4',
   );
 
-  // 3) Subtitle fades up
-  tl.fromTo('.hero-desc',
-    { opacity: 0, y: 18 },
-    { opacity: 1, y: 0, duration: 0.75, ease },
-    '-=0.55',
-  );
-
-  // 4) Status badge pops in
-  tl.fromTo('.hero-badge',
-    { opacity: 0, scale: 0.85, y: 10 },
-    { opacity: 1, scale: 1, y: 0, duration: 0.6, ease: 'back.out(1.8)' },
+  // 5) Name settles in with letter-spacing easing
+  tl.fromTo('.hero-name',
+    { opacity: 0, letterSpacing: '0.35em' },
+    { opacity: 1, letterSpacing: '-0.02em', duration: 0.8, ease },
     '-=0.45',
   );
 
-  // 5) Liquid button pops in
-  tl.fromTo('.hero-button',
-    { opacity: 0, y: 15, scale: 0.94 },
-    { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: 'back.out(1.5)' },
-    '-=0.4',
+  // 6) Description fades up
+  tl.fromTo('.hero-desc',
+    { opacity: 0, y: 16 },
+    { opacity: 1, y: 0, duration: 0.7, ease },
+    '-=0.55',
+  );
+
+  // 7) Badge + button rise together
+  tl.fromTo('.hero-meta',
+    { opacity: 0, y: 22 },
+    { opacity: 1, y: 0, duration: 0.7, ease: 'back.out(1.5)' },
+    '-=0.45',
+  );
+
+  // 8) Scroll hint fades in last
+  tl.fromTo('.hero-scroll-hint',
+    { opacity: 0 },
+    { opacity: 1, duration: 0.9, ease },
+    '+=0.1',
   );
 
   // Scroll scrub parallax effect
@@ -93,18 +114,37 @@ function animateHero() {
   if (hero) {
     const card = hero.querySelector('.hero-card-outer');
     if (card) {
-      gsap.to(card, {
-        scale: 0.92,
-        y: -50,
-        opacity: 0.3,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: hero,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.8,
-        },
-      });
+      gsap.fromTo(card,
+        { y: 0 },
+        {
+          y: -200,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: hero,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1,
+          },
+        }
+      );
+    }
+
+    const watermark = hero.querySelector('.hero-watermark');
+    if (watermark) {
+      gsap.fromTo(
+        watermark,
+        { y: 0 },
+        {
+          y: -90,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: hero,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1,
+          },
+        }
+      );
     }
   }
 }
