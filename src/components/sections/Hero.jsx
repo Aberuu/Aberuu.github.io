@@ -13,9 +13,10 @@ import {
   buildAsciiWall,
 } from '@/components/ui/ascii-art';
 
-const WIPE_MS = 700;
+const WIPE_MS = 1400;
 const AUTO_INTERVAL_MS = 8000;
 const TILE_SIZE = 20;
+const WIPE_EASE = 'cubic-bezier(0.16, 1, 0.3, 1)';
 
 const EDGE_TRAILS = [
   { color: '#39ff14', blocks: 2 },
@@ -25,8 +26,8 @@ const EDGE_TRAILS = [
 
 const buildWipePolygon = (width, height, trails) => {
   const block = TILE_SIZE;
-  const depthMin = 6;
-  const depthMax = 16;
+  const depthMin = 4;
+  const depthMax = 12;
 
   const strips = [];
   let remaining = Math.max(1, height);
@@ -37,8 +38,6 @@ const buildWipePolygon = (width, height, trails) => {
     strips.push(Math.round(h));
     remaining -= h;
   }
-
-  const totalSteps = Math.max(16, Math.min(48, Math.round(width / 48)));
 
   const xs = strips.map(() => {
     const units = Math.floor(Math.random() * (depthMax - depthMin)) + depthMin;
@@ -61,23 +60,25 @@ const buildWipePolygon = (width, height, trails) => {
   };
 
   // Neon trail bands lagging the frontier (visible on the already-revealed side).
-  // Each band shows a region x >= a_i per strip, intersected with the parent clip,
-  // producing a chromatic strip just left of the moving pixel edge.
+  // Each band is region x >= a_i per strip, intersected with the parent clip.
+  // Multiple keyframes make the band "breathe" (expand/contract) for a dynamic chase.
   const bands = trails.map((trail) => {
-    const bandPct = Math.max(3, ((trail.blocks * block) / width) * 100);
-    const bandPoly = (full) => {
+    const basePct = Math.max(3, ((trail.blocks * block) / width) * 100);
+    const bandPoly = (pct) => {
       const pts = [];
       for (let i = 0; i < strips.length; i++) {
-        const x = full ? 100 : Math.max(0, xs[i] - bandPct);
+        const x = pct ? Math.max(0, xs[i] - pct) : 100;
         pts.push(`${x}% ${yf(yc[i])}%`, `${x}% ${yf(yc[i + 1])}%`);
       }
       pts.push('100% 100%', '100% 0%');
       return `polygon(${pts.join(', ')})`;
     };
-    return { color: trail.color, from: bandPoly(false), to: bandPoly(true) };
+    const breath = [1, 1.45, 1.85, 1.2, 0];
+    const keyframes = breath.map((k) => ({ clipPath: bandPoly(basePct * k) }));
+    return { color: trail.color, keyframes };
   });
 
-  return { from: poly(false), to: poly(true), steps: totalSteps, bands };
+  return { from: poly(false), to: poly(true), bands };
 };
 
 const AsciiTokens = ({ lines }) =>
@@ -102,7 +103,10 @@ const EdgeTrails = ({ refs }) =>
       ref={(el) => { refs.current[i] = el; }}
       className="hero-bg-edge"
       aria-hidden="true"
-      style={{ background: `linear-gradient(90deg, ${trail.color}00 0%, ${trail.color}45 55%, ${trail.color}F2 100%)` }}
+      style={{
+        background: `linear-gradient(90deg, ${trail.color}00 0%, ${trail.color}45 55%, ${trail.color}F2 100%)`,
+        animationDelay: `${i * 0.05}s`,
+      }}
     />
   ));
 
@@ -153,17 +157,17 @@ export default function Hero() {
     if (!el) return undefined;
 
     const rect = el.getBoundingClientRect();
-    const { from, to, steps, bands } = buildWipePolygon(rect.width || window.innerWidth, rect.height || window.innerHeight, EDGE_TRAILS);
+    const { from, to, bands } = buildWipePolygon(rect.width || window.innerWidth, rect.height || window.innerHeight, EDGE_TRAILS);
     const anim = el.animate(
       [{ clipPath: from }, { clipPath: to }],
-      { duration: WIPE_MS, easing: `steps(${steps}, end)`, fill: 'forwards' },
+      { duration: WIPE_MS, easing: WIPE_EASE, fill: 'forwards' },
     );
     const edgeAnims = bands.map((band, i) => {
       const edgeEl = edgeRefs.current[i];
       if (!edgeEl) return null;
       return edgeEl.animate(
-        [{ clipPath: band.from }, { clipPath: band.to }],
-        { duration: WIPE_MS, easing: `steps(${steps}, end)`, fill: 'forwards' },
+        band.keyframes.map((frame) => ({ clipPath: frame.clipPath })),
+        { duration: WIPE_MS, easing: 'linear', fill: 'forwards' },
       );
     });
 
