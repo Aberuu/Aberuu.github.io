@@ -135,7 +135,7 @@ function animateHero() {
         watermark,
         { y: 0 },
         {
-          y: -90,
+          y: -200,
           ease: 'none',
           scrollTrigger: {
             trigger: hero,

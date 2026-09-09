@@ -4,6 +4,7 @@ export function LiquidButton({
   children,
   className = '',
   size = 'md',
+  theme = 'glass',
   href,
   onClick,
   ...props
@@ -36,32 +37,37 @@ export function LiquidButton({
     setMousePos((prev) => ({ ...prev, isHovered: false }));
   };
 
+  const themeClasses = {
+    glass: 'bg-white/[0.07] hover:bg-white/[0.14] border-white/20 hover:border-white/40 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] hover:shadow-[0_8px_32px_0_rgba(255,255,255,0.1)]',
+    navy: 'bg-[#130b4a]/70 hover:bg-[#0b0831]/80 border-[#39ff14]/40 hover:border-[#39ff14] shadow-[0_8px_32px_0_rgba(5,4,17,0.6)] hover:shadow-[0_8px_32px_0_rgba(57,255,20,0.15)]',
+  };
+
   const baseStyles = `
     group relative inline-flex items-center justify-center overflow-hidden
     font-medium transition-all duration-300 ease-out
-    backdrop-blur-xl bg-white/[0.07] hover:bg-white/[0.14]
-    border border-white/20 hover:border-white/40
-    shadow-[0_8px_32px_0_rgba(0,0,0,0.37)]
-    hover:shadow-[0_8px_32px_0_rgba(255,255,255,0.1)]
-    active:scale-[0.98] cursor-pointer select-none
+    backdrop-blur-xl border active:scale-[0.98] cursor-pointer select-none
+    ${themeClasses[theme] || themeClasses.glass}
   `.replace(/\s+/g, ' ').trim();
 
   const selectedSize = sizeClasses[size] || sizeClasses.md;
+
+  const glowColor =
+    theme === 'navy' ? 'rgba(82,102,255,0.35)' : 'rgba(255,255,255,0.22)';
 
   const content = (
     <>
       {/* Specular glass reflection on top */}
       <span
-        className="pointer-events-none absolute inset-x-0 top-0 h-[45%] rounded-t-full bg-gradient-to-b from-white/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[45%] rounded-[inherit] bg-gradient-to-b from-white/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity"
         aria-hidden="true"
       />
 
       {/* Interactive fluid glow follows cursor */}
       {mousePos.isHovered && (
         <span
-          className="pointer-events-none absolute -inset-px transition-opacity duration-300 opacity-100"
+          className="pointer-events-none absolute -inset-px rounded-[inherit] transition-opacity duration-300 opacity-100"
           style={{
-            background: `radial-gradient(120px circle at ${mousePos.x}px ${mousePos.y}px, rgba(255,255,255,0.22), transparent 70%)`,
+            background: `radial-gradient(120px circle at ${mousePos.x}px ${mousePos.y}px, ${glowColor}, transparent 70%)`,
           }}
           aria-hidden="true"
         />
