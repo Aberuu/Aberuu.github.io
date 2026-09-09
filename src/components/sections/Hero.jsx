@@ -21,7 +21,6 @@ const WIPE_EASE = 'cubic-bezier(0.16, 1, 0.3, 1)';
 const EDGE_TRAILS = [
   { color: '#39ff14', blocks: 2 },
   { color: '#00b4ff', blocks: 4 },
-  { color: '#ff2d55', blocks: 6 },
 ];
 
 const buildWipePolygon = (width, height, trails) => {

@@ -545,7 +545,6 @@ a { color: inherit; text-decoration: none; }
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  mix-blend-mode: screen;
   will-change: clip-path;
   animation: hero-edge-flicker 0.18s steps(2, start) infinite;
 }
@@ -1101,6 +1100,10 @@ a { color: inherit; text-decoration: none; }
     bottom: clamp(14px, 2.4vh, 30px);
     left: 14px;
     font-size: 8px;
+  }
+  .hero-bg-edge {
+    animation: none;
+    opacity: 0.9;
   }
 }
 
