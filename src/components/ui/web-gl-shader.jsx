@@ -1,8 +1,13 @@
 import { useEffect, useRef } from "react"
 import * as THREE from "three"
 
-export function WebGLShader({ className = "fixed top-0 left-0 w-full h-full block pointer-events-none -z-10" }) {
+export function WebGLShader({ className = "fixed top-0 left-0 w-full h-full block pointer-events-none -z-10", active = true }) {
   const canvasRef = useRef(null)
+  const activeRef = useRef(active)
+
+  useEffect(() => {
+    activeRef.current = active
+  }, [active])
   const sceneRef = useRef({
     scene: null,
     camera: null,
@@ -97,7 +102,7 @@ export function WebGLShader({ className = "fixed top-0 left-0 w-full h-full bloc
 
     const animate = () => {
       if (refs.uniforms) refs.uniforms.time.value += 0.01
-      if (refs.renderer && refs.scene && refs.camera) {
+      if (activeRef.current && refs.renderer && refs.scene && refs.camera) {
         refs.renderer.render(refs.scene, refs.camera)
       }
       refs.animationId = requestAnimationFrame(animate)

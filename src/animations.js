@@ -109,6 +109,13 @@ function animateHero() {
     '+=0.1',
   );
 
+  // 9) Background toggle chip fades in
+  tl.fromTo('.hero-bg-toggle',
+    { opacity: 0 },
+    { opacity: 1, duration: 0.8, ease },
+    '+=0.15',
+  );
+
   // Scroll scrub parallax effect
   const hero = document.querySelector('.hero-editorial');
   if (hero) {
