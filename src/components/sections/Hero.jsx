@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { WebGLShader } from '@/components/ui/web-gl-shader';
 import { LiquidButton } from '@/components/ui/liquid-glass-button';
 import {
@@ -119,23 +119,23 @@ export default function Hero() {
   const asciiRef = useRef(null);
   const edgeRefs = useRef([]);
 
-  const toggleBg = () => {
+  const toggleBg = useCallback(() => {
     if (busyRef.current) return;
     busyRef.current = true;
     setTransition('wipe');
+  }, []);
 
-    setTimeout(() => {
-      modeRef.current = modeRef.current === 'glow' ? 'ascii' : 'glow';
-      setBgMode(modeRef.current);
-      setTransition('idle');
-      busyRef.current = false;
-    }, WIPE_MS);
-  };
+  const finishWipe = useCallback(() => {
+    modeRef.current = modeRef.current === 'glow' ? 'ascii' : 'glow';
+    setBgMode(modeRef.current);
+    setTransition('idle');
+    busyRef.current = false;
+  }, []);
 
   useEffect(() => {
     const id = setInterval(toggleBg, AUTO_INTERVAL_MS);
     return () => clearInterval(id);
-  }, []);
+  }, [toggleBg]);
 
   useEffect(() => {
     const updateTiles = () => {
@@ -150,10 +150,12 @@ export default function Hero() {
 
   useLayoutEffect(() => {
     if (transition !== 'wipe') return undefined;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
 
     const el = bgMode === 'glow' ? asciiRef.current : glowRef.current;
-    if (!el) return undefined;
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      finishWipe();
+      return undefined;
+    }
 
     const rect = el.getBoundingClientRect();
     const { from, to, bands } = buildWipePolygon(rect.width || window.innerWidth, rect.height || window.innerHeight, EDGE_TRAILS);
@@ -170,11 +172,17 @@ export default function Hero() {
       );
     });
 
+    anim.onfinish = finishWipe;
+    const safety = setTimeout(() => {
+      if (busyRef.current) finishWipe();
+    }, WIPE_MS + 250);
+
     return () => {
+      clearTimeout(safety);
       anim.cancel();
       edgeAnims.forEach((edgeAnim) => edgeAnim?.cancel());
     };
-  }, [transition, bgMode]);
+  }, [transition, bgMode, finishWipe]);
 
   const isAscii = bgMode === 'ascii';
   const isTransitioning = transition !== 'idle';
