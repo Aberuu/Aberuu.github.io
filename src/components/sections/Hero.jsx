@@ -1,5 +1,8 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { WebGLShader } from '@/components/ui/web-gl-shader';
+import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+
+const WebGLShader = lazy(() =>
+  import('@/components/ui/web-gl-shader').then((m) => ({ default: m.WebGLShader }))
+);
 import { LiquidButton } from '@/components/ui/liquid-glass-button';
 import {
   ASCII_TITLE,
@@ -113,7 +116,9 @@ export default function Hero() {
   const [bgMode, setBgMode] = useState('glow');
   const [transition, setTransition] = useState('idle');
   const [wall, setWall] = useState([]);
+  const [heroInView, setHeroInView] = useState(true);
   const busyRef = useRef(false);
+  const heroRef = useRef(null);
   const modeRef = useRef('glow');
   const glowRef = useRef(null);
   const asciiRef = useRef(null);
@@ -146,6 +151,17 @@ export default function Hero() {
     updateTiles();
     window.addEventListener('resize', updateTiles);
     return () => window.removeEventListener('resize', updateTiles);
+  }, []);
+
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return undefined;
+    const observer = new IntersectionObserver(
+      ([entry]) => setHeroInView(entry.isIntersecting),
+      { threshold: 0 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   useLayoutEffect(() => {
@@ -205,6 +221,7 @@ export default function Hero() {
   return (
     <section
       id="top"
+      ref={heroRef}
       className="hero-editorial relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden px-4 py-24 sm:py-32"
       data-hero-section
     >
@@ -212,7 +229,9 @@ export default function Hero() {
         <span className="hero-watermark" aria-hidden="true">
           AGAPHE
         </span>
-        <WebGLShader active={!isAscii || transitioningToGlow} className="absolute inset-0 h-full w-full block pointer-events-none" />
+        <Suspense fallback={null}>
+          <WebGLShader active={(!isAscii || transitioningToGlow) && heroInView} className="absolute inset-0 h-full w-full block pointer-events-none" />
+        </Suspense>
         {isTransitioning && bgMode === 'ascii' && (
           <EdgeTrails refs={edgeRefs} />
         )}

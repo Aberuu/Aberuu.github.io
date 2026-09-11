@@ -60,7 +60,7 @@ function VideoCardItem({ item, index, startPlaying }) {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <video ref={videoRef} src={item.video} poster={item.image} muted loop playsInline />
+        <video ref={videoRef} src={item.video} poster={item.image} muted loop playsInline preload="metadata" />
         <span className="video-card-play-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28" style={{ width: 'clamp(28px, 4vw, 48px)', height: 'clamp(28px, 4vw, 48px)' }}>
             <path d="M6 3v18l16-9z" />
