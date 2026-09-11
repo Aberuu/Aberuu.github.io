@@ -225,6 +225,10 @@ export default function Hero() {
   const glowLayerClass = layerClass('glow');
   const asciiLayerClass = layerClass('ascii');
   const transitioningToGlow = transition === 'wipe' && bgMode === 'ascii';
+  // Mobile: canvas WebGL di dalam layer ber-clip-path selama wipe memicu tearing
+  // GPU — freeze shader selama transisi, lanjut otomatis saat idle.
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+  const shaderActive = (!isAscii || transitioningToGlow) && heroInView && !(isMobile && isTransitioning);
 
   return (
     <section
@@ -238,7 +242,7 @@ export default function Hero() {
           AGAPHE
         </span>
         <Suspense fallback={null}>
-          <WebGLShader active={(!isAscii || transitioningToGlow) && heroInView} className="absolute inset-0 h-full w-full block pointer-events-none" />
+          <WebGLShader active={shaderActive} className="absolute inset-0 h-full w-full block pointer-events-none" />
         </Suspense>
         {isTransitioning && bgMode === 'ascii' && (
           <EdgeTrails refs={edgeRefs} />

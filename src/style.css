@@ -428,8 +428,8 @@ a { color: inherit; text-decoration: none; }
 
 .hero-bg.wipe-in {
   z-index: 5;
-  image-rendering: pixelated;
-  will-change: clip-path;
+  /* hidden until the WAAPI wipe begins (kills full-layer flash on first frame) */
+  clip-path: polygon(0% 100%, 0% 0%, 0% 0%, 0% 100%);
 }
 
 /* Neon trail bands lagging the wipe frontier (chromatic RGB edge, left of reveal) */
@@ -439,7 +439,6 @@ a { color: inherit; text-decoration: none; }
   z-index: 2;
   pointer-events: none;
   opacity: 0; /* WAAPI fades bands in/out; hidden until wipe starts */
-  will-change: clip-path, opacity;
 }
 
 /* Pixel wipe is driven by Web Animations API from Hero.jsx (ragged polygon). */
