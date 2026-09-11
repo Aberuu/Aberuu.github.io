@@ -74,10 +74,13 @@ export function WebGLShader({
       }
 
       void main() {
+        float px = gl_FragCoord.x / resolution.x;
+        float py = gl_FragCoord.y / resolution.y;
+
         vec3 col = vec3(0.0);
         float alpha = 0.0;
 
-        // Idle living-wave background (glow mode)
+        // Idle + glow: living-wave background
         if (uWave > 0.5) {
           vec2 p = (gl_FragCoord.xy * 2.0 - resolution) / min(resolution.x, resolution.y);
           float d = length(p) * distortion;
@@ -87,15 +90,12 @@ export function WebGLShader({
           float r = 0.05 / abs(p.y + sin((rx + time) * xScale) * yScale);
           float g = 0.05 / abs(p.y + sin((gx + time) * xScale) * yScale);
           float b = 0.05 / abs(p.y + sin((bx + time) * xScale) * yScale);
-          float a = clamp(max(r, max(g, b)) * 1.6, 0.0, 1.0);
           col = vec3(r, g, b);
-          alpha = a;
+          alpha = clamp(max(r, max(g, b)) * 1.6, 0.0, 1.0);
         }
 
         // Shader wipe: ragged pixel neon frontier sweeping left -> right
         if (uWipe > 0.5) {
-          float px = gl_FragCoord.x / resolution.x;
-          float py = gl_FragCoord.y / resolution.y;
           float xq = (floor(px / gridX) + 0.5) * gridX;
           float row = floor(py / gridY);
 
@@ -111,8 +111,15 @@ export function WebGLShader({
           vec3 c = colorA * edgeG * 1.2 + colorB * band * 0.5;
           c *= flick * bob * fade;
 
-          col = c;
-          alpha = max(c.r, max(c.g, c.b));
+          // During a wipe back to glow, the living wave stays visible INSIDE
+          // the revealed area (masked by the frontier) instead of vanishing.
+          if (uWave > 0.5) {
+            col *= band;
+            alpha *= band;
+          }
+
+          col += c;
+          alpha = max(alpha, max(c.r, max(c.g, c.b)));
         }
 
         gl_FragColor = vec4(col, alpha);

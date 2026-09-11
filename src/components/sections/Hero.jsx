@@ -151,7 +151,9 @@ export default function Hero() {
   // frontier during transitions. It lives OUTSIDE the bg layers so it is never
   // clipped — no GPU tearing on mobile, no clip-path polygon anywhere.
   const shaderActive = isTransitioning || (heroInView && !isAscii);
-  const shaderWave = !isTransitioning && !isAscii;
+  // Wave stays alive when idle glow AND during a wipe heading back to glow
+  // (bgMode is still the outgoing mode while the wipe runs).
+  const shaderWave = isTransitioning ? bgMode === 'ascii' : !isAscii;
   const wipeDuration = (typeof window !== 'undefined' && window.innerWidth < 640) ? WIPE_MS_MOBILE : WIPE_MS;
 
   return (
