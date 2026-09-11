@@ -99,16 +99,15 @@ const AsciiTokens = ({ lines }) =>
     </span>
   ));
 
-const EdgeTrails = ({ refs }) =>
+const EdgeTrails = ({ refs, active }) =>
   EDGE_TRAILS.map((trail, i) => (
     <div
       key={trail.color}
       ref={(el) => { refs.current[i] = el; }}
-      className="hero-bg-edge"
+      className={`hero-bg-edge${active ? ' is-active' : ''}`}
       aria-hidden="true"
       style={{
         background: `linear-gradient(90deg, ${trail.color}00 0%, ${trail.color}45 55%, ${trail.color}F2 100%)`,
-        animationDelay: `${i * 0.05}s`,
       }}
     />
   ));
@@ -123,7 +122,8 @@ export default function Hero() {
   const modeRef = useRef('glow');
   const glowRef = useRef(null);
   const asciiRef = useRef(null);
-  const edgeRefs = useRef([]);
+  const glowEdgeRefs = useRef([]);
+  const asciiEdgeRefs = useRef([]);
 
   const toggleBg = useCallback(() => {
     if (busyRef.current) return;
@@ -182,15 +182,15 @@ export default function Hero() {
       [{ clipPath: from }, { clipPath: to }],
       { duration, easing: WIPE_EASE, fill: 'forwards' },
     );
+    const edgeSet = bgMode === 'ascii' ? glowEdgeRefs : asciiEdgeRefs;
     const edgeAnims = bands.map((band, i) => {
-      const edgeEl = edgeRefs.current[i];
+      const edgeEl = edgeSet.current[i];
       if (!edgeEl) return null;
       const n = band.keyframes.length;
       return edgeEl.animate(
         band.keyframes.map((frame, k) => ({
           offset: n > 1 ? k / (n - 1) : 0,
           clipPath: frame.clipPath,
-          opacity: k === 0 || k === n - 1 ? 0 : 1,
         })),
         { duration, easing: 'linear', fill: 'forwards' },
       );
@@ -244,9 +244,7 @@ export default function Hero() {
         <Suspense fallback={null}>
           <WebGLShader active={shaderActive} className="absolute inset-0 h-full w-full block pointer-events-none" />
         </Suspense>
-        {isTransitioning && bgMode === 'ascii' && (
-          <EdgeTrails refs={edgeRefs} />
-        )}
+        <EdgeTrails refs={glowEdgeRefs} active={isTransitioning && bgMode === 'ascii'} />
       </div>
 
       <div ref={asciiRef} className={asciiLayerClass} aria-hidden="true">
@@ -274,9 +272,7 @@ export default function Hero() {
             ))}
           </span>
         </div>
-        {isTransitioning && bgMode === 'glow' && (
-          <EdgeTrails refs={edgeRefs} />
-        )}
+        <EdgeTrails refs={asciiEdgeRefs} active={isTransitioning && bgMode === 'glow'} />
       </div>
 
       <div className="hero-card-outer relative z-10 w-full mx-auto max-w-3xl">
