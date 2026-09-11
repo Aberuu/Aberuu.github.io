@@ -19,70 +19,11 @@ import {
 const WIPE_MS = 1400;
 const WIPE_MS_MOBILE = 1200;
 const AUTO_INTERVAL_MS = 8000;
-const TILE_SIZE = 20;
-const WIPE_EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
+const WIPE_COLORS = ['#39ff14', '#00b4ff'];
+const { pow } = Math;
 
-const EDGE_TRAILS = [
-  { color: '#39ff14', blocks: 2 },
-  { color: '#00b4ff', blocks: 4 },
-];
-
-// Ragged "pixel" frontier sweeping left→right, plus neon chase bands.
-// Every feature steps in whole 20px blocks (TILE_SIZE), so the pixelated
-// look stays crisp, while a momentum-biased random walk keeps the sweep smooth.
-const buildWipePolygon = (width, height, trails) => {
-  const block = TILE_SIZE; // 20px — hard pixel size
-  const stripH = block; // one 20px block per horizontal row
-  const stripCount = Math.max(4, Math.ceil(height / stripH));
-  const depthUnits = width < 640 ? 4 : 5; // ± whole blocks of raggedness
-  const rowCount = stripCount + 1;
-
-  let v = 0;
-  let dir = Math.random() < 0.5 ? -1 : 1;
-  const ledges = [];
-  for (let i = 0; i < rowCount; i++) {
-    if (Math.random() < 0.16) dir *= -1; // occasionally reverse → smooth runs
-    v += dir;
-    v = Math.max(-depthUnits, Math.min(depthUnits, v));
-    ledges.push(v);
-  }
-  const minL = Math.min(...ledges);
-  const xs = ledges.map((l) => l - minL); // integer 20px-block units, ≥ 0
-
-  const y = (i) => (i / stripCount) * 100;
-  const px = (units) => ((units * block) / Math.max(1, width)) * 100;
-
-  const poly = (full) => {
-    const pts = ['0% 100%', '0% 0%'];
-    for (let i = 0; i < stripCount; i++) {
-      const x = full ? 100 : px(xs[i]);
-      pts.push(`${x}% ${y(i)}%`, `${x}% ${y(i + 1)}%`);
-    }
-    return `polygon(${pts.join(', ')})`;
-  };
-
-  // Neon trails lagging the frontier (visible on the already-revealed side).
-  const bands = trails.map((trail) => {
-    const basePct = Math.max(2.5, ((trail.blocks * block * 0.5) / Math.max(1, width)) * 100);
-    const bandPoly = (k) => {
-      const units = Math.round(((basePct * k) / 100) * (width / block));
-      const pts = [];
-      for (let i = 0; i < stripCount; i++) {
-        const x = Math.max(0, px(xs[i] - units));
-        pts.push(`${x}% ${y(i)}%`, `${x}% ${y(i + 1)}%`);
-      }
-      pts.push('100% 100%', '100% 0%');
-      return `polygon(${pts.join(', ')})`;
-    };
-    const breath = [1.3, 1.9, 2.3, 1.4, 0];
-    return {
-      color: trail.color,
-      keyframes: breath.map((k) => ({ clipPath: bandPoly(k) })),
-    };
-  });
-
-  return { from: poly(false), to: poly(true), bands };
-};
+// easeOutExpo — the same ease used to pace the shader frontier.
+const wipeEase = (p) => (p >= 1 ? 1 : 1 - pow(2, -10 * p));
 
 const AsciiTokens = ({ lines }) =>
   lines.map((line, i) => (
@@ -99,19 +40,6 @@ const AsciiTokens = ({ lines }) =>
     </span>
   ));
 
-const EdgeTrails = ({ refs, active }) =>
-  EDGE_TRAILS.map((trail, i) => (
-    <div
-      key={trail.color}
-      ref={(el) => { refs.current[i] = el; }}
-      className={`hero-bg-edge${active ? ' is-active' : ''}`}
-      aria-hidden="true"
-      style={{
-        background: `linear-gradient(90deg, ${trail.color}00 0%, ${trail.color}45 55%, ${trail.color}F2 100%)`,
-      }}
-    />
-  ));
-
 export default function Hero() {
   const [bgMode, setBgMode] = useState('glow');
   const [transition, setTransition] = useState('idle');
@@ -122,8 +50,7 @@ export default function Hero() {
   const modeRef = useRef('glow');
   const glowRef = useRef(null);
   const asciiRef = useRef(null);
-  const glowEdgeRefs = useRef([]);
-  const asciiEdgeRefs = useRef([]);
+  const wipeProgress = useRef({ current: 0 });
 
   const toggleBg = useCallback(() => {
     if (busyRef.current) return;
@@ -174,37 +101,33 @@ export default function Hero() {
       return undefined;
     }
 
-    const rect = el.getBoundingClientRect();
-    const { from, to, bands } = buildWipePolygon(rect.width || window.innerWidth, rect.height || window.innerHeight, EDGE_TRAILS);
-    const isMobile = (rect.width || window.innerWidth) < 640;
-    const duration = isMobile ? WIPE_MS_MOBILE : WIPE_MS;
-    const anim = el.animate(
-      [{ clipPath: from }, { clipPath: to }],
-      { duration, easing: WIPE_EASE, fill: 'forwards' },
-    );
-    const edgeSet = bgMode === 'ascii' ? glowEdgeRefs : asciiEdgeRefs;
-    const edgeAnims = bands.map((band, i) => {
-      const edgeEl = edgeSet.current[i];
-      if (!edgeEl) return null;
-      const n = band.keyframes.length;
-      return edgeEl.animate(
-        band.keyframes.map((frame, k) => ({
-          offset: n > 1 ? k / (n - 1) : 0,
-          clipPath: frame.clipPath,
-        })),
-        { duration, easing: 'linear', fill: 'forwards' },
-      );
-    });
+    const duration = window.innerWidth < 640 ? WIPE_MS_MOBILE : WIPE_MS;
+    wipeProgress.current = 0;
+    el.style.clipPath = 'inset(0 100% 0 0)';
 
-    anim.onfinish = finishWipe;
+    let raf = 0;
+    const start = performance.now();
+    const update = (ts) => {
+      const raw = Math.min(1, (ts - start) / duration);
+      const p = wipeEase(raw);
+      wipeProgress.current = p;
+      el.style.clipPath = `inset(0 ${(1 - p) * 100}% 0 0)`;
+      if (raw < 1) {
+        raf = requestAnimationFrame(update);
+      } else {
+        finishWipe();
+      }
+    };
+    raf = requestAnimationFrame(update);
+
     const safety = setTimeout(() => {
       if (busyRef.current) finishWipe();
     }, duration + 250);
 
     return () => {
+      cancelAnimationFrame(raf);
       clearTimeout(safety);
-      anim.cancel();
-      edgeAnims.forEach((edgeAnim) => edgeAnim?.cancel());
+      if (el) el.style.clipPath = '';
     };
   }, [transition, bgMode, finishWipe]);
 
@@ -224,11 +147,12 @@ export default function Hero() {
 
   const glowLayerClass = layerClass('glow');
   const asciiLayerClass = layerClass('ascii');
-  const transitioningToGlow = transition === 'wipe' && bgMode === 'ascii';
-  // Mobile: canvas WebGL di dalam layer ber-clip-path selama wipe memicu tearing
-  // GPU — freeze shader selama transisi, lanjut otomatis saat idle.
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-  const shaderActive = (!isAscii || transitioningToGlow) && heroInView && !(isMobile && isTransitioning);
+  // Shader draws (a) the idle living-wave in glow mode, and (b) the wipe
+  // frontier during transitions. It lives OUTSIDE the bg layers so it is never
+  // clipped — no GPU tearing on mobile, no clip-path polygon anywhere.
+  const shaderActive = isTransitioning || (heroInView && !isAscii);
+  const shaderWave = !isTransitioning && !isAscii;
+  const wipeDuration = (typeof window !== 'undefined' && window.innerWidth < 640) ? WIPE_MS_MOBILE : WIPE_MS;
 
   return (
     <section
@@ -241,10 +165,6 @@ export default function Hero() {
         <span className="hero-watermark" aria-hidden="true">
           AGAPHE
         </span>
-        <Suspense fallback={null}>
-          <WebGLShader active={shaderActive} className="absolute inset-0 h-full w-full block pointer-events-none" />
-        </Suspense>
-        <EdgeTrails refs={glowEdgeRefs} active={isTransitioning && bgMode === 'ascii'} />
       </div>
 
       <div ref={asciiRef} className={asciiLayerClass} aria-hidden="true">
@@ -272,8 +192,19 @@ export default function Hero() {
             ))}
           </span>
         </div>
-        <EdgeTrails refs={asciiEdgeRefs} active={isTransitioning && bgMode === 'glow'} />
       </div>
+
+      <Suspense fallback={null}>
+        <WebGLShader
+          active={shaderActive}
+          waveActive={shaderWave}
+          wipeActive={isTransitioning}
+          progress={wipeProgress}
+          duration={wipeDuration}
+          colors={WIPE_COLORS}
+          className="absolute inset-0 z-[6] h-full w-full block pointer-events-none"
+        />
+      </Suspense>
 
       <div className="hero-card-outer relative z-10 w-full mx-auto max-w-3xl">
         <main className="hero-card-inner">
