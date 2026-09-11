@@ -21,10 +21,11 @@ export function animateLoader(onComplete) {
     },
   });
 
-  tl.fromTo(word, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' })
-    .fromTo(fill, { scaleX: 0 }, { scaleX: 1, duration: 1.0, ease: 'power2.inOut' }, '-=0.2')
-    .to(word, { y: -25, opacity: 0, duration: 0.4, ease: 'power3.in' }, '+=0.1')
-    .to(loader, { yPercent: -100, duration: 0.7, ease: 'power4.inOut' }, '-=0.1');
+  tl.to({}, { duration: 0.8 })
+    .fromTo(word, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, ease: 'expo.out' })
+    .fromTo(fill, { scaleX: 0 }, { scaleX: 1, duration: 1.0, ease: 'power2.inOut' }, '-=0.3')
+    .to(word, { y: -30, opacity: 0, duration: 0.8, ease: 'power4.inOut' }, '+=0.2')
+    .to(loader, { yPercent: -100, duration: 0.8, ease: 'power4.inOut' }, '-=0.15');
 
   return tl;
 }
@@ -35,7 +36,7 @@ export function initAllAnimations(root = document) {
   const ctx = gsap.context(() => {
     animateHero();
     animateReveals();
-    animateProcessStack();
+    animateProcessStack();  
     animateWorkCards(cleanups);
     animateFooterSweep();
     animateHeader();

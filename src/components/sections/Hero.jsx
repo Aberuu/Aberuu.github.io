@@ -17,67 +17,68 @@ import {
 } from '@/components/ui/ascii-art';
 
 const WIPE_MS = 1400;
+const WIPE_MS_MOBILE = 1200;
 const AUTO_INTERVAL_MS = 8000;
 const TILE_SIZE = 20;
-const WIPE_EASE = 'cubic-bezier(0.16, 1, 0.3, 1)';
+const WIPE_EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
 
 const EDGE_TRAILS = [
   { color: '#39ff14', blocks: 2 },
   { color: '#00b4ff', blocks: 4 },
 ];
 
+// Ragged "pixel" frontier sweeping left→right, plus neon chase bands.
+// Every feature steps in whole 20px blocks (TILE_SIZE), so the pixelated
+// look stays crisp, while a momentum-biased random walk keeps the sweep smooth.
 const buildWipePolygon = (width, height, trails) => {
-  const block = TILE_SIZE;
-  const depthMin = 4;
-  const depthMax = 12;
+  const block = TILE_SIZE; // 20px — hard pixel size
+  const stripH = block; // one 20px block per horizontal row
+  const stripCount = Math.max(4, Math.ceil(height / stripH));
+  const depthUnits = width < 640 ? 4 : 5; // ± whole blocks of raggedness
+  const rowCount = stripCount + 1;
 
-  const strips = [];
-  let remaining = Math.max(1, height);
-  let guard = 0;
-  while (remaining > 0 && guard < 300) {
-    guard += 1;
-    const h = remaining > block * 2.4 ? block * (0.6 + Math.random() * 1.8) : remaining;
-    strips.push(Math.round(h));
-    remaining -= h;
+  let v = 0;
+  let dir = Math.random() < 0.5 ? -1 : 1;
+  const ledges = [];
+  for (let i = 0; i < rowCount; i++) {
+    if (Math.random() < 0.16) dir *= -1; // occasionally reverse → smooth runs
+    v += dir;
+    v = Math.max(-depthUnits, Math.min(depthUnits, v));
+    ledges.push(v);
   }
+  const minL = Math.min(...ledges);
+  const xs = ledges.map((l) => l - minL); // integer 20px-block units, ≥ 0
 
-  const xs = strips.map(() => {
-    const units = Math.floor(Math.random() * (depthMax - depthMin)) + depthMin;
-    const px = Math.random() < 0.5 ? units * block : -units * block;
-    return Math.max(0, Math.min(100, (px / width) * 100));
-  });
-
-  const yc = [0];
-  strips.forEach((h, i) => yc.push(yc[i] + h));
-  const scale = yc[yc.length - 1];
-  const yf = (v) => (v / scale) * 100;
+  const y = (i) => (i / stripCount) * 100;
+  const px = (units) => ((units * block) / Math.max(1, width)) * 100;
 
   const poly = (full) => {
     const pts = ['0% 100%', '0% 0%'];
-    for (let i = 0; i < strips.length; i++) {
-      const x = full ? 100 : xs[i];
-      pts.push(`${x}% ${yf(yc[i])}%`, `${x}% ${yf(yc[i + 1])}%`);
+    for (let i = 0; i < stripCount; i++) {
+      const x = full ? 100 : px(xs[i]);
+      pts.push(`${x}% ${y(i)}%`, `${x}% ${y(i + 1)}%`);
     }
     return `polygon(${pts.join(', ')})`;
   };
 
-  // Neon trail bands lagging the frontier (visible on the already-revealed side).
-  // Each band is region x >= a_i per strip, intersected with the parent clip.
-  // Multiple keyframes make the band "breathe" (expand/contract) for a dynamic chase.
+  // Neon trails lagging the frontier (visible on the already-revealed side).
   const bands = trails.map((trail) => {
-    const basePct = Math.max(3, ((trail.blocks * block) / width) * 100);
-    const bandPoly = (pct) => {
+    const basePct = Math.max(2.5, ((trail.blocks * block * 0.5) / Math.max(1, width)) * 100);
+    const bandPoly = (k) => {
+      const units = Math.round(((basePct * k) / 100) * (width / block));
       const pts = [];
-      for (let i = 0; i < strips.length; i++) {
-        const x = pct ? Math.max(0, xs[i] - pct) : 100;
-        pts.push(`${x}% ${yf(yc[i])}%`, `${x}% ${yf(yc[i + 1])}%`);
+      for (let i = 0; i < stripCount; i++) {
+        const x = Math.max(0, px(xs[i] - units));
+        pts.push(`${x}% ${y(i)}%`, `${x}% ${y(i + 1)}%`);
       }
       pts.push('100% 100%', '100% 0%');
       return `polygon(${pts.join(', ')})`;
     };
-    const breath = [1, 1.45, 1.85, 1.2, 0];
-    const keyframes = breath.map((k) => ({ clipPath: bandPoly(basePct * k) }));
-    return { color: trail.color, keyframes };
+    const breath = [1.3, 1.9, 2.3, 1.4, 0];
+    return {
+      color: trail.color,
+      keyframes: breath.map((k) => ({ clipPath: bandPoly(k) })),
+    };
   });
 
   return { from: poly(false), to: poly(true), bands };
@@ -175,23 +176,30 @@ export default function Hero() {
 
     const rect = el.getBoundingClientRect();
     const { from, to, bands } = buildWipePolygon(rect.width || window.innerWidth, rect.height || window.innerHeight, EDGE_TRAILS);
+    const isMobile = (rect.width || window.innerWidth) < 640;
+    const duration = isMobile ? WIPE_MS_MOBILE : WIPE_MS;
     const anim = el.animate(
       [{ clipPath: from }, { clipPath: to }],
-      { duration: WIPE_MS, easing: WIPE_EASE, fill: 'forwards' },
+      { duration, easing: WIPE_EASE, fill: 'forwards' },
     );
     const edgeAnims = bands.map((band, i) => {
       const edgeEl = edgeRefs.current[i];
       if (!edgeEl) return null;
+      const n = band.keyframes.length;
       return edgeEl.animate(
-        band.keyframes.map((frame) => ({ clipPath: frame.clipPath })),
-        { duration: WIPE_MS, easing: 'linear', fill: 'forwards' },
+        band.keyframes.map((frame, k) => ({
+          offset: n > 1 ? k / (n - 1) : 0,
+          clipPath: frame.clipPath,
+          opacity: k === 0 || k === n - 1 ? 0 : 1,
+        })),
+        { duration, easing: 'linear', fill: 'forwards' },
       );
     });
 
     anim.onfinish = finishWipe;
     const safety = setTimeout(() => {
       if (busyRef.current) finishWipe();
-    }, WIPE_MS + 250);
+    }, duration + 250);
 
     return () => {
       clearTimeout(safety);
